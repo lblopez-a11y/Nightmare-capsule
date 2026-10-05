@@ -1,0 +1,16 @@
+{
+  "name": "capsule-nightmare-online",
+  "private": true,
+  "version": "1.10.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=20 <25"
+  },
+  "dependencies": {
+    "three": "0.186.0"
+  }
+}

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>CAPSULE: NIGHTMARE MOBILE</title>
+  <link rel="stylesheet" href="./src/style.css" />
+
+</head>
+<body class="mobile-build">
+  <div id="app">
+    <canvas id="game"></canvas>
+
+    <div id="hud">
+      <div class="top-left">
+        <div class="game-title">CAPSULE <span>NIGHTMARE</span></div>
+        <div id="status">Conectando...</div>
+        <div id="playerNameHud">CAPSULE</div>
+      </div>
+
+      <div class="top-right">
+        <div id="fps">FPS: --</div>
+        <div id="players">JUGADORES: 1</div>
+      </div>
+
+      <div id="crosshair" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><i></i>
+      </div>
+
+      <div class="bottom-left">
+        <div class="money-panel">
+          <span>DINERO</span>
+          <b id="moneyText">$0</b>
+        </div>
+        <div class="hp-panel">
+          <div class="hp-header"><span>SALUD</span><b id="hpText">100 / 100</b></div>
+          <div class="hp-bar"><div id="hpFill"></div></div>
+        </div>
+        <div class="stamina-panel">
+          <div class="stamina-header"><span>IMPULSO</span><b id="staminaText">100</b></div>
+          <div class="stamina-bar"><div id="staminaFill"></div></div>
+        </div>
+      </div>
+
+      <div class="bottom-center">
+        <div id="waveText">RONDA 0</div>
+        <div id="enemyText">AMENAZAS: 0</div>
+        <div id="weaponHud">ARMA: PUÑOS</div>
+        <div id="ammoHud">MUNICIÓN: ∞ / ∞</div>
+        <div id="reloadHud" class="hidden">RECARGANDO...</div>
+      </div>
+
+      <div id="inventoryBar">
+        <div class="slot active" id="slot1"><span class="slot-key">1</span><b class="slot-name">PUÑOS</b><small class="slot-price">∞</small></div>
+        <div class="slot locked" id="slot2"><span class="slot-key">2</span><b class="slot-name">VACÍO</b><small class="slot-price">—</small></div>
+        <div class="slot locked" id="slot3"><span class="slot-key">3</span><b class="slot-name">VACÍO</b><small class="slot-price">—</small></div>
+      </div>
+
+      <div id="announcement" class="hidden">
+        <div id="announcementSmall">SISTEMA DE COMBATE</div>
+        <div id="announcementMain">PREPARATE</div>
+        <div id="announcementSub">Las luces no van a durar mucho.</div>
+      </div>
+
+      <div id="bossWrap" class="hidden">
+        <div class="boss-name">EL COLOSO</div>
+        <div class="boss-bar"><div id="bossFill"></div></div>
+        <div class="boss-hp" id="bossHp">300 / 300</div>
+      </div>
+
+      <div id="escapeWrap" class="hidden">
+        <div class="escape-kicker">ALARMA DE EVACUACIÓN</div>
+        <div class="escape-main">¡CORRÉ AL TREN ANTES DE QUE SE DESTRUYA EL SALÓN!</div>
+        <div class="escape-timer" id="escapeTimer">60s</div>
+      </div>
+
+      <div id="hitFlash"></div>
+      <div id="damageVignette"></div>
+
+      <div id="shopOverlay" class="hidden">
+        <div class="shop-card">
+          <div class="shop-kicker">VENTANA DE ABASTECIMIENTO</div>
+          <h2>ARSENAL</h2>
+          <div class="shop-money">DINERO: <b id="shopMoney">$0</b></div>
+          <div class="shop-grid">
+            <button id="buyPistol"><b>PISTOLA</b><span>$500 · 30 DMG</span></button>
+            <button id="buyShotgun"><b>ESCOPETA</b><span>$2.500 · 80 DMG</span></button>
+            <button id="buyRifle"><b>RIFLE DE ASALTO</b><span>$5.000 · 20 DMG/BALA</span></button>
+          </div>
+          <div id="shopStatus">La tienda abre cada 3 rondas.</div>
+          <div class="shop-timer">PRÓXIMA RONDA EN <b id="shopCountdown">20</b>s</div>
+          <button id="shopReadyBtn" class="shop-ready" type="button">✓ LISTO / OMITIR TIENDA</button>
+          <div id="shopReadyStatus" class="shop-ready-status">0 / 1 jugadores listos</div>
+        </div>
+      </div>
+
+      <div id="qteOverlay" class="hidden">
+        <div id="qteHeader"><b id="qteStatus">¡SOLTATE!</b><span id="qteProgress">0 / 7</span></div>
+        <div id="qteHint">Hacé clic en los objetivos. El mouse queda libre durante el QTE.</div>
+        <button id="qteTarget" aria-label="Objetivo QTE">7</button>
+      </div>
+
+      <div id="graphicsOverlay" class="hidden">
+        <div class="graphics-card">
+          <div class="graphics-kicker">CONFIGURACIÓN LOCAL</div>
+          <h2>PAUSA / GRÁFICOS</h2>
+          <p class="graphics-copy">Estos ajustes afectan solamente a esta PC. Ideal para equipos con 2–4 GB de RAM o gráficos integrados.</p>
+          <label class="graphics-option">
+            <input id="lowGraphicsToggle" type="checkbox" />
+            <span>Modo Gráficos Bajos / Modo Papa (todo al mínimo)</span>
+          </label>
+          <div class="graphics-details graphics-checks">
+            <label><input id="shadowsToggle" type="checkbox" checked /><span>Sombras</span></label>
+            <label><input id="fogToggle" type="checkbox" checked /><span>Niebla</span></label>
+            <label><input id="lightsToggle" type="checkbox" checked /><span>Luces dinámicas</span></label>
+            <label><input id="floorDetailToggle" type="checkbox" checked /><span>Piso detallado</span></label>
+            <label><input id="enemyDetailToggle" type="checkbox" checked /><span>Zombies detallados</span></label>
+            <label><input id="bloomToggle" type="checkbox" checked /><span>Brillo / Bloom (desactivado en Android)</span></label>
+          </div>
+          <div class="graphics-details graphics-readout">
+            <span>Sombras: <b id="shadowModeText">DINÁMICAS</b></span>
+            <span>Render: <b id="renderScaleText">100%</b></span>
+            <span>Niebla: <b id="fogModeText">ACTIVA</b></span>
+            <span>Distancia: <b id="drawDistanceText">190m</b></span>
+            <span>Luces: <b id="lightModeText">ACTIVAS</b></span>
+            <span>Enemigos: <b id="enemyModeText">DETALLADOS</b></span>
+          </div>
+          <button id="graphicsClose" class="graphics-close" type="button">VOLVER AL JUEGO</button>
+          <div class="graphics-note">P abre/cierra pausa y ajustes. ESC solo libera el cursor del navegador. Las opciones gráficas son locales a esta PC. Durante un QTE el mouse queda libre automáticamente.</div>
+        </div>
+      </div>
+
+      <div id="pauseOverlay" class="hidden">
+        <div class="pause-card">
+          <h1>PAUSA</h1>
+          <p>Haz clic para volver al combate</p>
+        </div>
+      </div>
+
+      <div id="deathOverlay" class="hidden">
+        <div class="death-card">
+          <div class="death-kicker">SEÑAL PERDIDA</div>
+          <h1>CAPSULE CAÍDO</h1>
+          <p id="deathText">Reaparición automática...</p>
+        </div>
+      </div>
+
+      <div id="startOverlay">
+        <div class="start-card">
+          <div class="start-kicker">PROTOCOLO 05 // SALÓN SUBTERRÁNEO</div>
+          <h1>CAPSULE: <span>NIGHTMARE</span></h1>
+          <p class="start-copy">Entrá al salón. Las oleadas van a buscarte.</p>
+          <label for="nameInput">NOMBRE DE JUGADOR</label>
+          <input id="nameInput" maxlength="16" autocomplete="off" placeholder="CAPSULE" />
+          <div class="mobile-server-wrap"><label for="serverInput">SERVIDOR ONLINE (opcional)</label><input id="serverInput" maxlength="120" autocomplete="off" placeholder="192.168.1.50:3000" /></div><div class="mobile-server-note">En esta versión online, dejalo vacío para conectarte automáticamente a este servidor. También podés escribir otro servidor WebSocket.</div>
+          <button id="startButton">ENTRAR AL SALÓN</button>
+          <div class="control-grid">
+            <div><b>W A S D</b><span>Mover</span></div>
+            <div><b>SHIFT</b><span>Correr</span></div>
+            <div><b>CTRL</b><span>Agacharse</span></div>
+            <div><b>CLICK</b><span>Atacar / Disparar</span></div>
+            <div><b>SPACE</b><span>Saltar</span></div>
+            <div><b>1 2 3</b><span>Cambiar arma</span></div>
+            <div><b>F</b><span>Linterna</span></div>
+            <div><b>E</b><span>Abrir puerta / Reanimar</span></div>
+            <div><b>R</b><span>Recargar</span></div>
+            <div><b>P</b><span>Pausa / gráficos</span></div>
+          </div>
+          <div class="start-note">Las sombras, la niebla y los efectos se generan en tiempo real.</div>
+        </div>
+      </div>
+
+      <div id="safeDoorPrompt" class="safe-door-prompt hidden"><b>PUERTA DE SALIDA</b><span>Mantené <strong>E</strong> para abrir la puerta y entrar al combate.</span></div>
+      <div id="controlsHint">
+        <b>WASD</b> mover &nbsp; <b>SHIFT</b> correr &nbsp; <b>CTRL</b> agacharse &nbsp; <b>SPACE</b> saltar &nbsp; <b>CLICK</b> atacar/disparar &nbsp; <b>R</b> recargar &nbsp; <b>E</b> reanimar
+      </div>
+    </div>
+
+      <div id="victoryOverlay" class="hidden">
+        <div class="victory-card">
+          <div class="victory-kicker">CAPÍTULO 1 // EVACUACIÓN COMPLETA</div>
+          <h1>¡HAS ESCAPADO CON VIDA!</h1>
+          <p>FIN DEL CAPÍTULO 1</p>
+          <div id="victoryStats">BAJAS TOTALES: 0 · DINERO OBTENIDO: $0</div>
+        </div>
+      </div>
+
+
+      <div id="mobileTouchUI" aria-hidden="true">
+        <button id="mobileMenuBtn" class="mobile-mini-btn" type="button" aria-label="Abrir menú">☰</button>
+        <button id="mobileFlashBtn" class="mobile-mini-btn" type="button" aria-label="Linterna">🔦</button>
+        <div id="mobileLookZone"></div>
+        <div id="mobileMoveZone">
+          <div id="mobileJoystickBase"><div id="mobileJoystickKnob"></div></div>
+          <button id="mobileSprintBtn" class="mobile-round-btn" type="button">🏃</button>
+        </div>
+        <div id="mobileActionCluster">
+          <button id="mobileFireBtn" class="mobile-fire-btn" type="button">GOLPE</button>
+          <div class="mobile-action-row">
+            <button id="mobileJumpBtn" class="mobile-action-btn" type="button">⤒</button>
+            <button id="mobileCrouchBtn" class="mobile-action-btn" type="button">⌄</button>
+            <button id="mobileReloadBtn" class="mobile-action-btn" type="button">R</button>
+          </div>
+          <button id="mobileInteractBtn" class="mobile-interact-btn" type="button">ACCION</button>
+        </div>
+        <div id="mobileWeaponBar">
+          <button data-mobile-slot="1" class="mobile-slot active">1<br><small>PUÑOS</small></button>
+          <button data-mobile-slot="2" class="mobile-slot">2<br><small>---</small></button>
+          <button data-mobile-slot="3" class="mobile-slot">3<br><small>---</small></button>
+        </div>
+      </div>
+
+    <div id="bootError" class="hidden">
+      <div class="boot-error-card">
+        <div class="boot-error-kicker">SISTEMA DETENIDO</div>
+        <h1>No se pudo cargar el motor 3D</h1>
+        <p id="bootErrorText">Cargando el motor 3D local...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./three.min.js"></script>
+  <script src="./game.js"></script>
+  <script src="./mobile-controls.js"></script>
+</body>
+</html>
